@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Send, Bot, User as UserIcon, Loader2, Sparkles, Info, RefreshCw, 
+  Send, Bot, User as UserIcon, Loader2, Sparkles, RefreshCw, 
   Globe, Brain, Zap, ExternalLink, ShieldCheck, Activity, Terminal, 
-  Shield, Cpu, Lock, ChevronRight, AlertCircle, X, Search, MessageSquare, 
-  FileText, ShieldAlert, Gavel, MousePointer2 
+  Shield, Cpu, Lock, ChevronRight, AlertCircle, X, MessageSquare, 
+  Gavel, ShieldAlert, Target, MousePointer2 
 } from 'lucide-react';
 import { getChatResponse, ChatMode } from '../services/geminiService';
 import { ChatMessage } from '../types';
@@ -16,7 +16,7 @@ const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<MessageWithSources[]>([
     { 
       role: 'model', 
-      text: 'Identity verified. SAFECLICK Tactical AI Assistant initialized.\n\nI am your Chief Intelligence Mentor. I am synchronized with global threat feeds to provide forensic-grade analysis on social engineering, cyber laws, and defensive protocols.\n\n**Awaiting tactical query.**' 
+      text: 'Identity verified. SAFECLICK Tactical Intelligence Station ALFA-7 active.\n\nI am your Chief Intelligence Mentor. I am synchronized with global threat feeds to provide high-fidelity analysis on social engineering and digital defense.\n\n**Ready for tactical query.**' 
     }
   ]);
   const [input, setInput] = useState('');
@@ -25,20 +25,20 @@ const Chatbot: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const QUICK_COMMANDS = [
-    { label: "Analyze a Scenario", icon: <Brain size={14}/>, query: "I want to analyze a potential social engineering scenario I encountered." },
-    { label: "Legal Advice", icon: <Gavel size={14}/>, query: "What are the legal steps to take if I'm a victim of a UPI fraud in India?" },
-    { label: "Red Flags Guide", icon: <ShieldAlert size={14}/>, query: "Can you provide a tactical breakdown of red flags in phishing emails?" },
-    { label: "MFA Hardening", icon: <Lock size={14}/>, query: "How can I harden my accounts against MFA fatigue and bypass attacks?" }
+    { label: "Analyze Scam", icon: <Brain size={14}/>, query: "Can you analyze a common social engineering scenario for me?" },
+    { label: "Legal Steps", icon: <Gavel size={14}/>, query: "What are the legal steps for reporting a cyber crime in India?" },
+    { label: "MFA Defense", icon: <Lock size={14}/>, query: "How do I protect myself from MFA fatigue attacks?" },
+    { label: "Phishing Red Flags", icon: <ShieldAlert size={14}/>, query: "What are the top red flags in a phishing email?" }
   ];
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   useEffect(scrollToBottom, [messages, isLoading]);
 
-  const handleSend = async (customQuery?: string) => {
-    const queryToUse = customQuery || input;
-    if (!queryToUse.trim() || isLoading) return;
+  const handleSend = async (query?: string) => {
+    const activeInput = query || input;
+    if (!activeInput.trim() || isLoading) return;
     
-    const userMsg = queryToUse;
+    const userMsg = activeInput;
     const newMessages = [...messages, { role: 'user', text: userMsg } as MessageWithSources];
     setMessages(newMessages);
     setInput('');
@@ -51,7 +51,7 @@ const Chatbot: React.FC = () => {
       console.error(error);
       setMessages([...newMessages, { 
         role: 'model', 
-        text: "Tactical communication failure. Neural link interrupted. Re-synchronize with core intelligence or verify credentials." 
+        text: "Neural link disruption. Re-synchronize with core intelligence or verify credentials." 
       }]);
     } finally {
       setIsLoading(false);
@@ -71,37 +71,37 @@ const Chatbot: React.FC = () => {
               <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-xl shadow-blue-500/20">
                 <Shield size={20} />
               </div>
-              <h3 className="font-black text-sm uppercase tracking-widest">Tactical Profile</h3>
+              <h3 className="font-black text-sm uppercase tracking-widest">Operation Status</h3>
            </div>
            
            <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 shadow-sm group hover:border-blue-500/30 transition-all cursor-default">
-                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2">Operation Mode</p>
+              <div className="p-6 rounded-3xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 shadow-sm group hover:border-blue-500/30 transition-all">
+                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2">Mentor Mode</p>
                  <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full animate-pulse ${mode === 'thinking' ? 'bg-purple-500' : 'bg-blue-500'}`}></span>
                     <span className={`text-xs font-black uppercase ${mode === 'thinking' ? 'text-purple-500' : 'text-blue-500'}`}>
-                      {mode === 'thinking' ? 'Chief Analyst' : mode === 'search' ? 'OSINT Intelligence' : 'Lite Mentor'}
+                      {mode === 'thinking' ? 'Chief Analyst' : mode === 'search' ? 'Web Intelligence' : 'Lite Mentor'}
                     </span>
                  </div>
               </div>
 
               <div className="p-6 rounded-3xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 shadow-sm">
-                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2">Uplink Integrity</p>
+                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2">Link Encryption</p>
                  <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                    <span className="text-xs font-black uppercase opacity-70">Secured & Encrypted</span>
+                    <span className="text-xs font-black uppercase opacity-70">Secured & Verified</span>
                  </div>
               </div>
            </div>
         </div>
 
         <div className="space-y-6">
-           <h3 className="font-black text-[10px] uppercase tracking-[0.2em] opacity-30 px-2">Sub-System Telemetry</h3>
+           <h3 className="font-black text-[10px] uppercase tracking-[0.2em] opacity-30 px-2">Telemetry</h3>
            <div className="space-y-3">
               {[
-                { label: 'Neural Scraping', icon: <Cpu size={14}/>, status: 'Active' },
-                { label: 'Risk Modeling', icon: <Terminal size={14}/>, status: 'Ready' },
-                { label: 'Credential Guard', icon: <ShieldCheck size={14}/>, status: 'Active' }
+                { label: 'Neural Scraping', icon: <Cpu size={14}/> },
+                { label: 'Behavioral Tracing', icon: <Activity size={14}/> },
+                { label: 'Heuristic Check', icon: <Terminal size={14}/> }
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10">
                    <div className="flex items-center gap-3">
@@ -114,13 +114,13 @@ const Chatbot: React.FC = () => {
            </div>
         </div>
 
-        <div className="mt-auto p-6 rounded-3xl bg-slate-900 text-white shadow-2xl space-y-4 border border-white/5 group hover:border-blue-500/40 transition-all cursor-default">
+        <div className="mt-auto p-6 rounded-3xl bg-slate-900 text-white shadow-2xl space-y-4 border border-white/5 group hover:border-blue-500/40 transition-all">
            <div className="flex items-center gap-2 text-blue-400">
               <Sparkles size={14} className="animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Mentor Insight</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">Mentor Tip</span>
            </div>
            <p className="text-[10px] font-medium leading-relaxed opacity-60 italic">
-             "For complex scenarios requiring deep behavioral reasoning, engage the 'Analyst' mode. This allocates maximum heuristic cycles to your query."
+             "Switch to 'Analyst' mode for forensic deep-dives into sophisticated exploit chains."
            </p>
         </div>
       </aside>
@@ -139,7 +139,7 @@ const Chatbot: React.FC = () => {
             </div>
             <div>
               <h2 className="font-black text-2xl tracking-tight leading-none">SafeChat Mentor</h2>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mt-2">Tactical Intelligence Hub: ALFA-VINC</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mt-2">Intelligence Hub: ALFA-7</p>
             </div>
           </div>
           
@@ -147,7 +147,7 @@ const Chatbot: React.FC = () => {
             <div className="flex bg-slate-100 dark:bg-white/5 p-1.5 rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner">
               {[
                 { id: 'lite', label: 'Lite', icon: <Zap size={14} /> },
-                { id: 'search', label: 'OSINT', icon: <Globe size={14} /> },
+                { id: 'search', label: 'Web', icon: <Globe size={14} /> },
                 { id: 'thinking', label: 'Analyst', icon: <Brain size={14} /> }
               ].map((t) => (
                 <button 
@@ -168,7 +168,7 @@ const Chatbot: React.FC = () => {
             <button 
               onClick={() => setMessages([messages[0]])} 
               className="p-3.5 hover:bg-red-500/10 hover:text-red-500 rounded-2xl transition-all group"
-              title="Purge Intel Buffer"
+              title="Purge Intel Feed"
             >
               <RefreshCw size={20} className="group-hover:rotate-180 transition-transform duration-700" />
             </button>
@@ -220,14 +220,12 @@ const Chatbot: React.FC = () => {
                 </div>
                 <div className={`flex items-center gap-3 px-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                   <p className="text-[10px] font-black uppercase tracking-widest opacity-20">
-                    {msg.role === 'model' ? 'Verified Intelligence Dossier' : 'Authorized Access Agent'} • {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {msg.role === 'model' ? 'Intelligence Dossier v2.4' : 'Authorized Access'} • {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
-                  <Activity size={10} className="opacity-10 animate-pulse" />
                 </div>
               </div>
             </div>
           ))}
-          
           {isLoading && (
             <div className="flex items-start gap-6 animate-pulse">
               <div className="shrink-0 p-4 rounded-2xl bg-slate-900 text-blue-500 border border-white/5">
@@ -252,7 +250,7 @@ const Chatbot: React.FC = () => {
         <div className="p-8 border-t border-slate-100 dark:border-white/5 bg-white/80 dark:bg-[#020617]/80 backdrop-blur-3xl space-y-6">
           
           {/* Quick Commands */}
-          <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
+          <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-700">
              {QUICK_COMMANDS.map((cmd, i) => (
                <button 
                 key={i}
@@ -268,7 +266,7 @@ const Chatbot: React.FC = () => {
           <div className="max-w-4xl mx-auto relative group">
             <div className="absolute inset-0 bg-blue-500/10 blur-2xl rounded-[2.5rem] opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
             <div className="relative flex items-center gap-4 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 rounded-[2.5rem] p-3 shadow-2xl focus-within:border-blue-500/40 transition-all">
-               <div className="p-4 text-slate-300 flex items-center justify-center">
+               <div className="p-4 text-slate-300">
                   <MessageSquare size={24} />
                </div>
                <input 
@@ -282,23 +280,19 @@ const Chatbot: React.FC = () => {
                <button 
                 onClick={() => handleSend()}
                 disabled={isLoading || !input.trim()}
-                className="p-5 rounded-3xl bg-blue-600 text-white shadow-xl shadow-blue-500/20 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all group/send"
+                className="p-5 rounded-3xl bg-blue-600 text-white shadow-xl shadow-blue-500/20 hover:scale-105 active:scale-95 disabled:opacity-50 transition-all"
                >
-                 {isLoading ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                 {isLoading ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} />}
                </button>
             </div>
             <div className="flex justify-center gap-12 mt-4 opacity-40">
                <div className="flex items-center gap-2">
                   <ShieldCheck size={14} className="text-green-500" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">TLS 1.3 Encryption Active</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">TLS Encryption Active</span>
                </div>
                <div className="flex items-center gap-2">
                   <Lock size={14} className="text-blue-500" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Zero-Persistence Analysis</span>
-               </div>
-               <div className="hidden sm:flex items-center gap-2">
-                  <Activity size={14} className="text-indigo-500" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Latency: 0.14ms</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Zero-PII Storage</span>
                </div>
             </div>
           </div>

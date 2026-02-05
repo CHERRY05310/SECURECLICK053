@@ -6,51 +6,10 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export type ChatMode = 'lite' | 'search' | 'thinking';
 
-const KNOWN_SHORTENERS = [
-  'bit.ly', 'tinyurl.com', 't.co', 'is.gd', 'buff.ly', 'goo.gl', 'ow.ly', 'shorte.st', 't.ly', 
-  'rebrand.ly', 'tiny.cc', 'clk.im', 'v.gd', 'snip.ly', 't2mio.com'
-];
-
-const SIMULATED_BLACKLIST = [
-  'login-apple-security.com', 'secure-paypal-login.net', 'bank-verify-account.support', 
-  'microsoft-office-update.xyz', 'amazon-order-verify.in', 'netfIix-verify.com', 
-  'login.facebook-security.co', 'walmart-giftcard.free', 'binance-support-live.com',
-  'coinbase-verify-identity.net', 'chase-online-access.com'
-];
-
-const SUSPICIOUS_TLDS = ['.xyz', '.top', '.icu', '.work', '.click', '.zip', '.mov', '.link', '.today', '.gq', '.tk', '.ml'];
-
 export const analyzeThreatContent = async (text: string, imageData?: string): Promise<AnalysisResult> => {
   const model = 'gemini-3-flash-preview';
   
-  // Heuristic Pre-Processor
-  const localIndicators: string[] = [];
-  const lowercaseText = text.toLowerCase();
-  
-  KNOWN_SHORTENERS.forEach(shortener => {
-    if (lowercaseText.includes(shortener)) localIndicators.push(`URL Shortener (${shortener})`);
-  });
-
-  SIMULATED_BLACKLIST.forEach(domain => {
-    if (lowercaseText.includes(domain)) localIndicators.push(`Blacklisted Domain Match (${domain})`);
-  });
-
-  SUSPICIOUS_TLDS.forEach(tld => {
-    if (lowercaseText.includes(tld + '/') || lowercaseText.endsWith(tld)) localIndicators.push(`Risky TLD (${tld})`);
-  });
-
-  if (/https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/g.test(text)) localIndicators.push("Direct IP Access");
-  if (text.includes("xn--")) localIndicators.push("Punycode (IDN) Spoofing");
-  if ((text.match(/%/g) || []).length > 3) localIndicators.push("Heavy %-Encoding Obfuscation");
-  if (/[\u200B-\u200D\uFEFF]/.test(text)) localIndicators.push("Zero-Width Character Evasion");
-
-  const localIndicatorsStr = localIndicators.length > 0 
-    ? `Heuristic flags: ${localIndicators.join(', ')}.` 
-    : "No immediate heuristic flags.";
-
   const prompt = `Act as a Senior Cyber-Forensics Lead. Analyze the following artifact for social engineering markers: "${text}".
-
-  Heuristic Pre-Processor Logs: ${localIndicatorsStr}
 
   AUDIT SCOPE:
   1. ADVANCED EVASION: Check for character substitution, hidden subdomains, or redirection loops.
@@ -62,7 +21,7 @@ export const analyzeThreatContent = async (text: string, imageData?: string): Pr
   - riskLevel: 0-100 (Integer)
   - reasoning: High-level professional technical summary of the findings.
   - suggestedActions: Tactical list of defensive protocols for the user.
-  - detectedIndicators: Technical terminology of artifacts found (e.g., "Typosquatting", "Social Pretexting").`;
+  - detectedIndicators: Technical terminology of artifacts found.`;
 
   const parts: any[] = [{ text: prompt }];
   if (imageData) {
@@ -94,11 +53,11 @@ export const analyzeThreatContent = async (text: string, imageData?: string): Pr
     return JSON.parse(response.text) as AnalysisResult;
   } catch (e) {
     return {
-      status: localIndicators.length > 0 ? 'Suspicious' : 'Safe',
-      riskLevel: localIndicators.length > 0 ? 60 : 0,
-      reasoning: "Forensic parser anomaly. Summary based on heuristic indicators.",
-      suggestedActions: ["Manual validation required", "Verify source integrity"],
-      detectedIndicators: localIndicators
+      status: 'Suspicious',
+      riskLevel: 50,
+      reasoning: "Forensic parser anomaly. Manual verification required.",
+      suggestedActions: ["Do not click links", "Verify source identity"],
+      detectedIndicators: ["Parser Error"]
     };
   }
 };
@@ -106,27 +65,22 @@ export const analyzeThreatContent = async (text: string, imageData?: string): Pr
 export const getChatResponse = async (history: ChatMessage[], mode: ChatMode = 'lite'): Promise<{ text: string; sources?: { title: string; uri: string }[] }> => {
   let model = 'gemini-3-flash-preview';
   
-  let systemInstruction = `You are the SAFECLICK Chief Intelligence Mentor & Tactical Assistant.
+  let systemInstruction = `You are the SAFECLICK Chief Intelligence Mentor. 
 
-PERSONA: You are a world-class Cyber-Intelligence Analyst and Security Mentor. Your tone is authoritative, highly precise, yet intellectually supportive. You do not give generic advice; you provide forensic-grade insights.
+PERSONA: You are a world-class Cyber-Intelligence Analyst and Security Mentor. Your tone is authoritative, analytical, and highly precise, yet intellectually supportive. You do not give generic advice; you provide forensic-grade insights.
 
-OPERATING FRAMEWORK:
-1. RESPONSE ARCHITECTURE: For any complex query, follow this structure:
-   - **Executive Summary**: A concise, bottom-line-up-front (BLUF) assessment.
-   - **Threat Analysis**: A deep dive into the psychological and technical mechanics of the threat. Use terminology like "Attack Vectors", "Payload Delivery", "Pretexting", "Social Engineering Heuristics".
-   - **Tactical Hardening Protocol**: A step-by-step checklist of immediate defensive actions.
-   - **Legal Intelligence**: Relevant Indian laws (IT Act, IPC, DPDP) and reporting steps (1930 Helpline).
+REASONING FRAMEWORK:
+For every query, structure your response as follows:
+1. **TACTICAL SUMMARY**: A Bottom-Line-Up-Front (BLUF) executive assessment.
+2. **THREAT MECHANICS**: Deep reasoning into the "Why" and "How". Explain psychological triggers (Urgency, Authority) and technical vectors (Homograph attacks, MFA fatigue).
+3. **TACTICAL HARDENING**: Concrete, step-by-step defensive actions for the user.
+4. **LEGAL INTEL**: Relevant Indian laws (IT Act, IPC, DPDP) and 1930 reporting steps where applicable.
 
-2. EXPERTISE PILLARS:
-   - **Identifying Attacks**: Teach the user to spot "Red Flags" like urgency bias, authority simulation, and homograph obfuscation.
-   - **Cyber Law**: Explain consequences and legal remedies clearly.
-   - **Safe Behavior**: Promote a "Zero-Trust" mindset.
-
-3. ANALYST MODE (Thinking Mode): When using 'Analyst' mode, provide extreme depth. Simulate how an attacker would think and then provide the counter-maneuver.
-
-4. SAFETY: Never request PII, passwords, or sensitive credentials. Maintain strict operational security boundaries.
-
-Always use professional Markdown with bold headers and clean bullet points for readability. Respond like a high-tier intelligence dossier.`;
+GUIDELINES:
+- Use professional terminology (TTPs, Vectors, Payloads, Zero-Trust).
+- Use analogies to explain complex topics.
+- Maintain a professional, supportive, and trustworthy tone.
+- If in 'thinking' (Analyst) mode, simulate an attacker's thought process to provide better defense.`;
 
   const config: any = { systemInstruction };
 
@@ -153,7 +107,7 @@ Always use professional Markdown with bold headers and clean bullet points for r
     }));
 
   return { 
-    text: response.text || "Neural link disruption: Intelligence retrieval failed.",
+    text: response.text || "Communication link lost.",
     sources 
   };
 };
