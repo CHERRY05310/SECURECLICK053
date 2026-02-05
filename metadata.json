@@ -1,0 +1,7 @@
+{
+  "name": "SAFECLICK - SEADS",
+  "description": "A modern, cross-platform security application focused on Social Engineering awareness, AI-powered threat detection, and legal guidance.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

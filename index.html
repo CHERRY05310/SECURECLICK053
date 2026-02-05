@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAFECLICK – Social Engineering Awareness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              cyber: {
+                blue: '#00d2ff',
+                green: '#39ff14',
+                dark: '#0a192f',
+                neon: '#ccff00'
+              },
+              brand: {
+                primary: '#3b82f6',
+                secondary: '#6366f1',
+                accent: '#f43f5e'
+              }
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'scan': 'scan 3s linear infinite',
+              'glow': 'glow 2s ease-in-out infinite alternate',
+              'shimmer': 'shimmer 2s infinite linear',
+              'spin-slow': 'spin 8s linear infinite',
+              'morph': 'morph 15s ease-in-out infinite',
+              'radar': 'radar 4s linear infinite',
+              'grid-pulse': 'gridPulse 10s ease-in-out infinite',
+              'typewriter': 'typewriter 2s steps(40) forwards',
+              'glitch': 'glitch 0.4s cubic-bezier(.25,.46,.45,.94) both infinite',
+              'ripple': 'ripple 1.5s linear infinite',
+              'border-spin': 'borderSpin 4s linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-15px)' },
+              },
+              scan: {
+                '0%': { transform: 'translateY(-100%)' },
+                '100%': { transform: 'translateY(100%)' },
+              },
+              glow: {
+                'from': { boxShadow: '0 0 10px -2px var(--glow-color, #3b82f6)' },
+                'to': { boxShadow: '0 0 25px 2px var(--glow-color, #3b82f6)' },
+              },
+              shimmer: {
+                '0%': { backgroundPosition: '-200% 0' },
+                '100%': { backgroundPosition: '200% 0' },
+              },
+              morph: {
+                '0%, 100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+                '50%': { borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' },
+              },
+              radar: {
+                '0%': { transform: 'rotate(0deg)', opacity: '0.1' },
+                '50%': { opacity: '0.3' },
+                '100%': { transform: 'rotate(360deg)', opacity: '0.1' },
+              },
+              gridPulse: {
+                '0%, 100%': { opacity: '0.05' },
+                '50%': { opacity: '0.15' },
+              },
+              typewriter: {
+                'from': { width: '0' },
+                'to': { width: '100%' }
+              },
+              glitch: {
+                '0%': { transform: 'translate(0)' },
+                '20%': { transform: 'translate(-2px, 2px)' },
+                '40%': { transform: 'translate(-2px, -2px)' },
+                '60%': { transform: 'translate(2px, 2px)' },
+                '80%': { transform: 'translate(2px, -2px)' },
+                '100%': { transform: 'translate(0)' },
+              },
+              ripple: {
+                '0%': { transform: 'scale(0.8)', opacity: '1' },
+                '100%': { transform: 'scale(2.4)', opacity: '0' },
+              },
+              borderSpin: {
+                '100%': { transform: 'rotate(360deg)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+      
+      :root {
+        --glow-color: #3b82f6;
+      }
+
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      /* Animated Background Pattern */
+      .bg-pattern {
+        background-color: transparent;
+        background-image: 
+          radial-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+          linear-gradient(rgba(59, 130, 246, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px, 80px 80px, 80px 80px;
+      }
+
+      .dark .bg-pattern {
+        background-image: 
+          radial-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+          linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dark .glass {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      }
+
+      .dark .glass-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      /* Advanced Hover */
+      .premium-card {
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      .premium-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3);
+      }
+      .premium-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 50%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+        transform: skewX(-25deg);
+        transition: 0.7s;
+      }
+      .premium-card:hover::after {
+        left: 125%;
+      }
+
+      .shimmer-text {
+        background: linear-gradient(90deg, #3b82f6, #6366f1, #d946ef, #3b82f6);
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 5s linear infinite;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, #3b82f6, #6366f1);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+
+      .stagger-in > * {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      }
+      
+      @keyframes slideIn {
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .stagger-in > *:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-in > *:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-in > *:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-in > *:nth-child(4) { animation-delay: 0.4s; }
+      .stagger-in > *:nth-child(5) { animation-delay: 0.5s; }
+      .stagger-in > *:nth-child(6) { animation-delay: 0.6s; }
+
+      .glow-border {
+        position: relative;
+      }
+      .glow-border::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        background: linear-gradient(45deg, #3b82f6, transparent, #6366f1);
+        z-index: -1;
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .glow-border:hover::before {
+        opacity: 1;
+      }
+
+      /* Custom animations for loading */
+      .typewriter-text {
+        overflow: hidden;
+        border-right: 2px solid #3b82f6;
+        white-space: nowrap;
+        animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+      }
+
+      @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+      }
+
+      @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: #3b82f6; }
+      }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react": "https://esm.sh/react@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+        "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+        "recharts": "https://esm.sh/recharts@^3.7.0",
+        "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+      }
+    }
+    </script>
+  </head>
+  <body class="bg-[#f8fafc] dark:bg-[#020617] transition-colors duration-700 bg-pattern">
+    <div id="root"></div>
+  </body>
+</html>
